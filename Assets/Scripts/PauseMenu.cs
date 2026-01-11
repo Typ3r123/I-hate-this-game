@@ -57,7 +57,9 @@ public class PauseMenu : MonoBehaviour
 
     public void Resume()
     {
-        pauseMenu.SetActive(false);
+        if (pauseMenu != null)
+            pauseMenu.SetActive(false);
+        
         Time.timeScale = 1f;
         PauseGame = false;
 
@@ -65,29 +67,37 @@ public class PauseMenu : MonoBehaviour
         if (textOpened != null) textOpened.SetActive(true);
         
         // Восстанавливаем состояние объектов какое было перед паузой
-        foreach (GameObject obj in objectsToHideOnPause)
+        if (objectsToHideOnPause != null)
         {
-            if (obj != null && objectStates.ContainsKey(obj))
+            foreach (GameObject obj in objectsToHideOnPause)
             {
-                obj.SetActive(objectStates[obj]);
+                if (obj != null && objectStates.ContainsKey(obj))
+                {
+                    obj.SetActive(objectStates[obj]);
+                }
             }
         }
     }
 
     public void Pause()
     {
-        pauseMenu.SetActive(true);
+        if (pauseMenu != null)
+            pauseMenu.SetActive(true);
+        
         Time.timeScale = 0f;
         PauseGame = true;
 
         // Сохраняем состояние объектов перед скрытием
         objectStates.Clear();
-        foreach (GameObject obj in objectsToHideOnPause)
+        if (objectsToHideOnPause != null)
         {
-            if (obj != null)
+            foreach (GameObject obj in objectsToHideOnPause)
             {
-                objectStates[obj] = obj.activeSelf;
-                obj.SetActive(false);
+                if (obj != null)
+                {
+                    objectStates[obj] = obj.activeSelf;
+                    obj.SetActive(false);
+                }
             }
         }
 
