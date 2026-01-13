@@ -32,6 +32,9 @@ public class PlayerMovement : MonoBehaviour // - Вместо «PlayerMove» д�
     private Vector2 moveVector;
     public bool faceRight = true;
 
+    //------- Для привязки к платформе -------
+    private Transform currentPlatform;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -110,7 +113,34 @@ public class PlayerMovement : MonoBehaviour // - Вместо «PlayerMove» д�
 
     void CheckingGround()
     {
-        onGround = Physics2D.OverlapCircle(GroundCheck.position, GroundCheckRadius, Ground);
+        Collider2D groundCollider = Physics2D.OverlapCircle(GroundCheck.position, GroundCheckRadius, Ground);
+        onGround = groundCollider != null;
         anim.SetBool("onGround", onGround);
+
+        // Если игрок на земле — привязываем его к платформе
+        if (onGround && groundCollider != null)
+        {
+            if (currentPlatform != groundCollider.transform)
+            {
+                // Отвязываем от старой платформы
+                if (currentPlatform != null)
+                {
+                    transform.parent = null;
+                }
+
+                // Привязываем к новой платформе
+                currentPlatform = groundCollider.transform;
+                transform.parent = currentPlatform;
+            }
+        }
+        else
+        {
+            // Если игрок в воздухе — отвязываем от платформы
+            if (currentPlatform != null)
+            {
+                transform.parent = null;
+                currentPlatform = null;
+            }
+        }
     }
 }
