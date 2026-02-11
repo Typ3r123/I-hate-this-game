@@ -10,16 +10,17 @@ public class LoadNextScene : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            // Отвязываем игрока от платформы перед загрузкой новой сцены
+            other.transform.parent = null;
+            
             Unlocklevel();
             int current = SceneManager.GetActiveScene().buildIndex;
             int next = current + 1;
             
             SceneManager.LoadScene(next);
-
-           
         }
-
     }
+
     public void Unlocklevel()
     {
         int currentlevel = SceneManager.GetActiveScene().buildIndex;
